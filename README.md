@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # dm-data-rounding-masker
 Rounds numerical data to a specified precision. Masks the original data granularity and adds a layer of obfuscation. - Focused on Tools designed to generate or mask sensitive data with realistic-looking but meaningless values
 

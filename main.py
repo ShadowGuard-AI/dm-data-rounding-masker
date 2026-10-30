@@ -93,10 +93,20 @@ def main():
         sys.exit(1)
     
     results = []
+    invalid = []
     for number_str in numbers:
         result = round_and_mask(number_str, args.precision, args.randomize, args.multiplier)
         if result is not None:
             results.append(str(result))
+        else:
+            invalid.append(number_str)
+
+    # Silently dropping a bad value shifts every later value's position in a
+    # comma-separated list, so a caller pairing inputs with outputs would
+    # misalign them. Fail the run instead of printing a shorter list.
+    if invalid:
+        logging.error(f"Invalid numeric input(s): {', '.join(invalid)}")
+        sys.exit(1)
 
     if results:
         print(",".join(results))

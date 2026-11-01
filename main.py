@@ -37,6 +37,11 @@ def round_and_mask(data, precision, randomize, multiplier):
         float: The rounded data.
     """
     try:
+        # float() is my whole input test, and it is looser than it looks:
+        # it accepts "nan" and "inf" as happily as "12.5". Those sail
+        # through every step below and print as nan or inf in the results,
+        # never landing in the invalid list in main. I note it here because
+        # a reader would reasonably assume the invalid path catches them.
         data = float(data)  # Convert to float to handle integers and decimals
     except ValueError:
         logging.error(f"Invalid input: '{data}' is not a valid number.")
@@ -49,9 +54,20 @@ def round_and_mask(data, precision, randomize, multiplier):
         return None
 
     if randomize:
+        # The jitter is half a unit of the last digit I keep, scaled by the
+        # precision itself, and it lands after the multiplier, so the
+        # multiplier never magnifies it. Half a kept unit is exactly enough
+        # to push a value across its rounding boundary either way, which is
+        # the point: two runs of the same input can round to neighbours.
+        # With a negative precision the same formula widens to half a ten,
+        # half a hundred, and so on, matching the coarser rounding.
         data += random.uniform(-0.5 / (10**precision), 0.5 / (10**precision))  # Add a small random value
 
     try:
+        # This is Python's round, with everything that carries: ties go to
+        # the even neighbour, not up, so 2.5 rounds to 2 at precision 0, and
+        # binary floats mean a value like 2.675 can round to 2.67 because
+        # the stored number sits a hair under the decimal I was given.
         return round(data, precision)
     except TypeError:
         logging.error(f"Precision must be an integer.")

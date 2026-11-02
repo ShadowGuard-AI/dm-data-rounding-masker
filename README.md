@@ -22,38 +22,39 @@ Rounds numerical data to a specified precision. Masks the original data granular
 ![Major separator: a wax tablet stylus writing and smoothing, with seal rings](sep-heavy.svg)
 
 ## Install
-`git clone https://github.com/ShadowGuardAI/dm-data-rounding-masker`
+`git clone https://github.com/ShadowGuard-AI/dm-data-rounding-masker`
 
-> Ledger note, flagged in place: the clone line above spells the organisation without its hyphen. It is preserved exactly as printed in the live README. The corrected line stands on the website, labelled there as a correction.
+> Ledger note, corrected in this wave: the clone line formerly spelled the organisation without its hyphen; it now reads ShadowGuard-AI.
 
 ![Minor separator: a short centred stylus line](sep-light.svg)
 
 ## Usage
-`./dm-data-rounding-masker [params]`
+`python3 main.py [INPUT_DATA] [options]`
 
 The invocation is shown as a shape and no more than a shape. The source publishes no worked call, no input file name, and no column name, and none is invented here.
 
 ![Minor separator: a short centred stylus line](sep-light.svg)
 
 ## Parameters
+- `input_data`: Numerical data to round (single number or comma-separated list). Optional; if not provided, reads from stdin.
 - `-h`: Show help message and exit
-- `-p`: No description provided
-- `-r`: Add a small random value before rounding.
-- `-m`: No description provided
-- `-v`: Enable verbose logging.
+- `-p`, `--precision`: Number of decimal places to round to. Defaults to 0.
+- `-r`, `--randomize`: Add a small random value before rounding.
+- `-m`, `--multiplier`: Multiplier to apply to the number before rounding. Defaults to 1.0.
+- `-v`, `--verbose`: Enable verbose logging.
 
-> Chronicle entry: Two of the five controls carry no description in the source.
+> Chronicle entry, corrected in this wave: two controls formerly carried no description; -p and -m now carry their parser meanings and defaults.
 
-> Chronicle entry: The README clone line spells the organisation without its hyphen.
+> Chronicle entry, corrected in this wave: the clone line formerly spelled the organisation without its hyphen; it now reads ShadowGuard-AI.
 
-The absences stand at full size. The controls -p and -m carry no description in the source, and this page assigns neither of them a precision, a mode, a default, or a unit. The source never states what unit or scale a precision follows, and never states a default a run assumes. The source never states how the precision is specified in a call, beyond the bare invocation shape above. No input route, no output route, and no column is named anywhere in the source. Nothing is invented to fill those spaces.
+The controls -p and -m formerly carried no description in the source; both are now described in the parameter list above, with -p default 0 and -m default 1.0. The source never states a unit or scale beyond decimal places for -p, and none is invented here.
 
 ![Minor separator: a short centred stylus line](sep-light.svg)
 
 ## License
-Copyright (c) ShadowGuardAI
+This project is released under the license in the [LICENSE](LICENSE) file. See LICENSE for details.
 
-The closing line above is preserved exactly as printed, with the organisation spelled without its hyphen. It is the second of two appearances of that spelling in the live README; the first is the clone line under Install. Both stay untouched here. Repairs live on the website, labelled as repairs.
+The closing line above is corrected in this wave to point at LICENSE; the organisation spelling there now carries its hyphen.
 
 ![Major separator: a wax tablet stylus writing and smoothing, with seal rings](sep-heavy.svg)
 

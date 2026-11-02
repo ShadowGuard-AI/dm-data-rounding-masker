@@ -3,161 +3,190 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dm Data Rounding Masker: what it is, how it runs, where it stops</title>
-<meta name="description" content="Dm Data Rounding Masker is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.">
+<title>dm-data-rounding-masker: The Great Library's Copying Room</title>
 <style>
+@font-face { font-family: "Cantarell"; src: url("fonts/Cantarell.ttf") format("truetype"); }
+@font-face { font-family: "Cantarell"; src: url("fonts/Cantarell-Bold.ttf") format("truetype"); font-weight: bold; }
+@font-face { font-family: "Cabin"; src: url("fonts/Cabin.ttf") format("truetype"); }
 :root {
-  --bg: #241a10; --panel: #362818; --ink: #f4ead2;
-  --mut: #483620;
-  --acc: #eeba5c; --acc2: #96b296;
-  --line: #362818;
+  --ming: #2e5a7b; --ming-dark: #18344a; --ming-soft: #476b87;
+  --porc: #f7f3e8; --ground: #f1ecdd; --cinnabar: #c02d20; --pine: #2e5e3e;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Trebuchet MS', sans-serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Courier New', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
+body { margin: 0; background: var(--ground); color: var(--ming-soft);
+  font-family: "Cabin", sans-serif; font-size: 18px; line-height: 1.55; }
+main { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
+h1, h2, h3 { font-family: "Cantarell", sans-serif; color: var(--ming-dark); line-height: 1.2; }
+h1 { font-size: 2rem; margin: 18px 0 6px; }
+h2 { font-size: 1.45rem; margin: 0 0 12px; }
+img.art { width: 100%; height: auto; display: block; border-radius: 10px; }
+img.logo { width: 150px; margin: 14px 0; }
+.panel { background: var(--porc); border: 2px solid var(--ming);
+  border-radius: 4px 18px 18px 18px; padding: 24px 26px; margin: 26px 0;
+  box-shadow: inset 0 0 0 4px var(--porc), inset 0 0 22px rgba(46,90,123,0.35); }
+.chronicle { font-family: "Cantarell", sans-serif; color: var(--ming);
+  letter-spacing: 0.04em; font-size: 0.95rem; text-transform: uppercase; }
+.seal { display: inline-block; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--cinnabar); margin-right: 8px; vertical-align: baseline; }
+code, pre { font-family: "Cabin", monospace; color: var(--ming-dark); }
+pre.record { background: #fffdf6; border: 1.5px solid var(--ming); padding: 18px;
+  overflow-x: auto; white-space: pre-wrap; font-size: 0.92rem; }
+.callout { background: #efe6cf; border-left: 6px solid var(--ming);
+  padding: 12px 16px; margin: 14px 0; font-style: italic; }
+ul.controls { list-style: none; padding: 0; }
+ul.controls li { padding: 10px 4px; border-bottom: 1px solid var(--ming); font-size: 1.05rem; }
+ul.controls li.nudge { border: 2px solid var(--cinnabar); border-radius: 10px; padding: 12px; }
+.absence { font-size: 1.15rem; color: var(--ming-dark); }
+.empty-space { min-height: 74px; border: 1.5px dashed var(--ming); border-radius: 10px;
+  margin-top: 12px; }
+button.tag, a.tagbtn { font-family: "Cantarell", sans-serif; font-size: 1rem;
+  color: var(--ming-dark); background: linear-gradient(160deg, #e9e2cd, #d9d2ba);
+  border: 2px solid var(--ming); border-radius: 4px 16px 16px 16px;
+  padding: 12px 20px; cursor: pointer; margin: 6px 6px 6px 0;
+  box-shadow: 0 0 0 2px var(--porc), 0 0 0 4px rgba(46,90,123,0.4); }
+button.tag:hover, a.tagbtn:hover { background: linear-gradient(160deg, #f3e3bb, #e6d193); }
+button.tag:active { transform: translateY(2px); background: #cfc5a6; }
+button.tag:focus-visible, a.tagbtn:focus-visible { outline: 3px double var(--cinnabar); outline-offset: 3px; }
+a { color: var(--ming-dark); text-decoration: none; }
+a::before { content: "\25a0"; color: var(--ming); margin-right: 7px; font-size: 0.8em; }
+a:hover::before { color: var(--cinnabar); }
+label { font-family: "Cantarell", sans-serif; color: var(--ming-dark); display: block; margin-top: 14px; }
+input[type="text"] { font-family: "Cabin", sans-serif; font-size: 1rem; padding: 9px 12px;
+  border: 2px solid var(--ming); border-radius: 8px; background: #fffdf6; width: 100%; }
+.desk-entry { margin-top: 16px; }
+.closing-rule { border: none; border-top: 5px solid var(--pine); margin: 44px 0 10px; }
+footer { font-size: 0.92rem; }
 </style>
 </head>
-<body class="layout-rail">
-<!-- This page exists for dm-data-rounding-masker alone: the layout (sidebar-rail),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
-<header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Dm Data Rounding Masker logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Dm Data Rounding Masker</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/dm-data-rounding-masker">github.com/ShadowGuard-AI/dm-data-rounding-masker</a></p>
-</header>
-
+<body>
 <main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/dm-data-rounding-masker">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">Dm Data Rounding Masker is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Dm Data Rounding Masker: 3 files, 132 counted
-          lines across Python 113, Markdown 18, Text 1. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>main.py</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/dm-data-rounding-masker.git<br>$ cd dm-data-rounding-masker</p>
-      </section>
-      
-  <section aria-label="real code">
-    <h2>The code, as it sits in the repo</h2>
-    <p>From <code>main.py</code>, line 8 on. I did
-    not tidy it for the page. What you see is what the file has.</p>
-    <pre class="code"><code>
+  <img class="art" src="intro-banner.png" alt="A single blank scroll tag turned toward old slanted light, tesserae on a tally tray and obelisk shadows on a courtyard wall behind it, no lettering anywhere">
+  <p class="chronicle">Chronicle entry, the season of the ships' return</p>
+  <h1>dm-data-rounding-masker: The Great Library's Copying Room</h1>
+  <img class="logo" src="logo.png" alt="A blank scroll tag with a cord hole, a folded foot, and one cinnabar seal dot, above the repository name">
+  <img class="art" src="banner.png" alt="The copying room at work, its label board carrying the repository name above the borrowing desk">
+  <img class="art" src="scene.svg" alt="The copying room in three animated bands: courtyard shadow, copying desks, and the borrowing desk">
 
-def setup_argparse():
-    &quot;&quot;&quot;
-    Sets up the argparse for the command-line interface.
-
-    Returns:
-        argparse.ArgumentParser: The argument parser object.
-    &quot;&quot;&quot;
-    parser = argparse.ArgumentParser(description=&quot;Rounds numerical data to a specified precision for data masking.&quot;)
-    parser.add_argument(&quot;input_data&quot;, nargs=&quot;?&quot;, type=str, help=&quot;Numerical data to round (single number or comma-separated list).  If not provided, will read from stdin.&quot;)
-    parser.add_argument(&quot;-p&quot;, &quot;--precision&quot;, type=int, default=0, help=&quot;Number of decimal places to round to (default: 0).&quot;)
-    parser.add_argument(&quot;-r&quot;, &quot;--randomize&quot;, action=&quot;store_true&quot;, help=&quot;Add a small random value before rounding.&quot;)
-    parser.add_argument(&quot;-m&quot;, &quot;--multiplier&quot;, type=float, default=1.0, help=&quot;Multiplier to apply to the number before rounding (default: 1.0).&quot;)
-    parser.add_argument(&quot;-v&quot;, &quot;--verbose&quot;, action=&quot;store_true&quot;, help=&quot;Enable verbose logging.&quot;)
-    return parser
-
-
-def round_and_mask(data, precision, randomize, multiplier):
-    &quot;&quot;&quot;
-    Rounds a single numerical value to the specified precision.</code></pre>
+  <section class="panel" id="plate-one">
+    <h2><span class="seal"></span>First plate: the work</h2>
+    <p>Rounds numerical data to a specified precision. Masks the original data granularity and adds a layer of obfuscation. - Focused on Tools designed to generate or mask sensitive data with realistic-looking but meaningless values</p>
+    <p>The program rounds numerical data to a specified precision. In so doing it masks the original data granularity, and it thereby adds a layer of obfuscation. No figure from any visitor's column is set beside that statement for illustration.</p>
   </section>
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>main.py</code></td><td>113</td></tr>
-        <tr><td><code>README.md</code></td><td>18</td></tr>
-        <tr><td><code>requirements.txt</code></td><td>1</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">setup_argparse, round_and_mask, main</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/dm-data-rounding-masker/tree/main/dm-data-rounding-masker-Visuals">dm-data-rounding-masker-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Dm Data Rounding Masker">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Dm Data Rounding Masker">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Dm Data Rounding Masker">
-        </div>
-      </section>
+
+  <section class="panel" id="plate-two">
+    <h2><span class="seal"></span>Second plate: fetching, with one open repair</h2>
+    <p>Whoever would keep a local copy should fetch it with git:</p>
+    <p><code>git clone https://github.com/ShadowGuard-AI/dm-data-rounding-masker</code></p>
+    <div class="callout">Site correction, labelled as a correction: the address preserved in the README spells the organisation without its hyphen, as ShadowGuardAI. The line above is a mend. A visitor who copied the source literally would be directed to the wrong house.</div>
+  </section>
+
+  <section class="panel" id="plate-three">
+    <h2><span class="seal"></span>Third plate: the invocation shape</h2>
+    <p><code>./dm-data-rounding-masker [params]</code></p>
+    <p>The shape is the whole of what the source chooses to give, so this plate stops at the shape. The source publishes no worked call, no input file name, and no column name that an honest plate could borrow. The space beside the line stays respectfully empty:</p>
+    <div class="empty-space" aria-hidden="true"></div>
+  </section>
+
+  <section class="panel" id="plate-four">
+    <h2><span class="seal"></span>Fourth plate: the five controls, in the order printed</h2>
+    <ul class="controls">
+      <li>- `-h`: Show help message and exit</li>
+      <li>- `-p`: No description provided</li>
+      <li class="nudge">- `-r`: Add a small random value before rounding.</li>
+      <li>- `-m`: No description provided</li>
+      <li>- `-v`: Enable verbose logging.</li>
+    </ul>
+    <p class="absence">Absence, at full size: the control -p carries no description in the source. Nothing here assigns it the precision, a unit, a scale, or a default.</p>
+    <p class="absence">Absence, at full size: the control -m carries no description in the source. Nothing here assigns it a mode or any other conduct.</p>
+    <p class="absence">Absence, at full size: the source never states what unit or scale a precision follows, and never states a default a run assumes when a control is not supplied.</p>
+    <p class="absence">Absence, at full size: the source promises rounding to a specified precision without ever stating how that precision is specified in a call, beyond the bracketed parameters in the invocation shape.</p>
+    <p class="absence">Absence, at full size: the source names no input, no output, and no column anywhere, so the route by which figures arrive and depart is learned from the program itself rather than from its documentation.</p>
+    <h3>Verbose Logging</h3>
+    <p>The -v control enables verbose logging, as the fourth plate records. The logging heading of this re-skin reads Verbose Logging.</p>
+    <label for="kept-precision">Kept Precision</label>
+    <input type="text" id="kept-precision" name="kept-precision" placeholder="The source states no unit and no default">
+    <label><input type="checkbox" name="nudge"> Nudge Before Rounding</label>
+    <p><button class="tag" type="button">Round the Figures</button></p>
+  </section>
+
+  <section class="panel" id="plate-five">
+    <h2><span class="seal"></span>Fifth plate: precision and granularity, paired</h2>
+    <p>To round to a specified precision is to declare how much fineness a figure may keep, while everything finer than that declaration is surrendered by design. A reader of the output learns the neighbourhood of a value without ever recovering the value's exact address within it.</p>
+    <p>The copying room understood that discretion well. Its transcripts preserved the sense and the magnitude of a borrowed book's accounts while the original, with its exact hand, sailed home. A figure rounded here keeps its substance, its magnitude, and its place in every sum that matters, while its accidents, the trailing fineness by which an exact observation could be traced back, are surrendered as deliberately as a copyist surrendered another man's handwriting.</p>
+    <div class="callout">Chronicle entry: Rounding is performed to a specified precision.</div>
+    <div class="callout">Chronicle entry: A small random value may be added before rounding.</div>
+  </section>
+
+  <section class="panel" id="plate-six">
+    <h2><span class="seal"></span>Sixth plate: the two licence facts, kept apart</h2>
+    <p>First stands the repository LICENSE file itself: MIT terms, dated 2025 to 2026. Its holder is described by outline only: a year span, a two word pen name, a bracketed given name holding one initial, and a bracketed handle fronted by an at sign. The line itself is not copied onto this page, and that file alone is the one a downstream reader should cite.</p>
+    <p>Second, labelled openly as a site correction, stands the README closing line respelled with the current hyphenated organisation in the place where the published line omitted the hyphen:</p>
+    <p><code>Copyright (c) ShadowGuard-AI</code></p>
+    <p>The preserved line, spelled without the hyphen, stands untouched in the record at the foot of this page and in the README itself.</p>
+  </section>
+
+  <section class="panel" id="plate-seven">
+    <h2><span class="seal"></span>Seventh plate: the borrowing desk</h2>
+    <p>Present a request slip naming what you came for, and the clerk fetches exactly the one ledger entry that answers it rather than emptying the whole volume onto the desk. Scholars reconstructing old harbour accounts, clerks preparing figures for publication, students whose coursework demands publishable numbers without private ones, and hobbyists tidying a household ledger before sharing it are each served the same courtesy: one entry, fully opened, nothing relevant withheld and nothing extraneous smuggled in.</p>
+    <p>
+      <button class="tag" type="button" data-entry="precision">Request slip: precision</button>
+      <button class="tag" type="button" data-entry="granularity">Request slip: granularity</button>
+      <button class="tag" type="button" data-entry="nudge">Request slip: random nudging</button>
+      <button class="tag" type="button" data-entry="logging">Request slip: verbose logging</button>
+    </p>
+    <div class="desk-entry" id="desk-entry">
+      <h3>Ledger entry</h3>
+      <p id="desk-text">Choose a request slip above, and the clerk will open the one entry that answers it.</p>
+      <p id="desk-seal"></p>
     </div>
   </section>
+
+  <section class="panel" id="record">
+    <h2><span class="seal"></span>The preserved record</h2>
+    <p>The copying room keeps its copy of the source below, line for line, with both unhyphenated spellings standing exactly as the live README prints them.</p>
+    <pre class="record">![Banner](banner.png)
+
+# dm-data-rounding-masker
+Rounds numerical data to a specified precision. Masks the original data granularity and adds a layer of obfuscation. - Focused on Tools designed to generate or mask sensitive data with realistic-looking but meaningless values
+
+## Install
+`git clone https://github.com/ShadowGuardAI/dm-data-rounding-masker`
+
+## Usage
+`./dm-data-rounding-masker [params]`
+
+## Parameters
+- `-h`: Show help message and exit
+- `-p`: No description provided
+- `-r`: Add a small random value before rounding.
+- `-m`: No description provided
+- `-v`: Enable verbose logging.
+
+## License
+Copyright (c) ShadowGuardAI</pre>
+  </section>
+
+  <hr class="closing-rule">
+  <footer>
+    <p>Fonts: Cantarell and Cabin, each under the SIL Open Font License 1.1, with licence texts shipped beside them. The record closes on the scroll tag in lamplight in the old room, its face blank, its seal dot uppermost.</p>
+  </footer>
 </main>
-<footer>
-  <p>Dm Data Rounding Masker is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
+<script>
+var entries = {
+  precision: { text: "Rounding is performed to a specified precision. To round is to declare how much fineness a figure may keep; everything finer is surrendered by design. The source states no unit, no scale, and no default for that precision, and this desk invents none.", seal: "" },
+  granularity: { text: "Rounding masks the original data granularity and adds a layer of obfuscation. A reader of the output learns the neighbourhood of a value without recovering its exact address within it. The copy goes out into the world; the original granularity stays home.", seal: "" },
+  nudge: { text: "The -r control, in the source's own words: Add a small random value before rounding. Where the operator wishes the surrender to go one step further, that small random value ensures even the boundary between one kept precision and the next cannot be read as a confession.", seal: "This entry carries the cinnabar seal dot, as a card reporting a run in which the random nudge was applied." },
+  logging: { text: "The -v control, in the source's own words: Enable verbose logging. A visitor troubled by silence receives this entry, with its verbose logging stated in full.", seal: "" }
+};
+document.querySelectorAll("button[data-entry]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var e = entries[btn.getAttribute("data-entry")];
+    document.getElementById("desk-text").textContent = e.text;
+    var s = document.getElementById("desk-seal");
+    s.textContent = e.seal;
+    s.style.color = e.seal ? "#c02d20" : "";
+  });
+});
+</script>
 </body>
 </html>

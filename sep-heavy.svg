@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 48" width="1200" height="48" role="img" aria-label="Major separator: a wax tablet stylus writing and smoothing, with seal rings">
+  <line x1="20" y1="24" x2="470" y2="24" stroke="#2e5a7b" stroke-width="3"/>
+  <line x1="730" y1="24" x2="1180" y2="24" stroke="#2e5a7b" stroke-width="3"/>
+  <rect x="486" y="8" width="228" height="32" fill="#e2d8c4" stroke="#2e5e3e" stroke-width="3"/>
+  <path d="M506 20 h130 M506 30 h100" stroke="#2e5a7b" stroke-width="3"/>
+  <rect x="640" y="12" width="9" height="24" fill="#966e3c" transform="rotate(18 644 24)"/>
+  <g fill="none" stroke-width="4">
+    <circle cx="452" cy="24" r="10" stroke="#c02d20"/>
+    <circle cx="748" cy="24" r="10" stroke="#c02d20"/>
+  </g>
+  <circle cx="600" cy="24" r="0" fill="#c02d20"/>
+</svg>
